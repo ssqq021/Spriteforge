@@ -1,0 +1,8 @@
+Milestone validation (2026-07-25)
+
+- Python server sources compile successfully.
+- Frontend dependencies are installed, but `npm run build` is blocked by TypeScript strict-mode errors:
+  - `src/App.tsx:395` — `project` may be undefined.
+  - `src/store.ts:488` — an undefined value is cast to `State`.
+
+These implementation errors are recorded for the next fix; no production behavior was changed during the milestone packaging.

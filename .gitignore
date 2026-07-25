@@ -1,0 +1,11 @@
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Python virtual environments and bytecode
+server/.venv/
+**/__pycache__/
+*.py[cod]
+
+# Local service credentials
+server/.env
