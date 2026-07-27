@@ -90,7 +90,9 @@ export function buildCharacterPrompt(input: {
     input.manualPrompt.trim(),
     `方向：${directionMap[input.direction]}`,
     `风格：${input.style}`,
-    `输出要求：${input.resolution}×${input.resolution} PNG，单个角色，透明背景`
+    `输出要求：${input.resolution}×${input.resolution} PNG，单个角色，透明背景`,
+    "构图要求：完整单人全身站立，人物、头饰、双手、双脚和整件武器都必须在画面内；主体约占画面高度 75%，四周至少保留 10% 留白，任何部分不得触碰或超出画布边缘。",
+    "Avoid close-up, cropped, cut off, out of frame, partial body, missing feet, truncated weapon, edge touching."
   ]
     .filter(Boolean)
     .join("；");

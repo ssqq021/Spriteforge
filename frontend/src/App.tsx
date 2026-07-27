@@ -1448,6 +1448,7 @@ function AIStudio() {
     negativePrompt: getCharacterTemplate("three-kingdoms-general").negativePrompt,
     style: "Chinese Adventure",
     resolution: 512,
+    candidateCount: 2,
     direction: "front" as "front" | "back" | "side",
     seed: 12345,
     consistency: 80,
@@ -1536,13 +1537,9 @@ function AIStudio() {
 
       updateGenerationTask(taskId, {status: "running", progress: 8});
 
-      const steps = [22, 38, 57, 74, 89];
-      for (const progress of steps) {
-        await new Promise((resolve) => window.setTimeout(resolve, 280));
-        updateGenerationTask(taskId, {progress});
-      }
-
       const resultAssetIds: string[] = [];
+      const candidateCount =
+        form.providerId === "spriteforge-server" ? form.candidateCount : 4;
 
       if (form.providerId === "spriteforge-server" && spriteForgeServerProvider.generateStream) {
         await spriteForgeServerProvider.generateStream(
@@ -1550,7 +1547,7 @@ function AIStudio() {
             prompt: finalPrompt,
             negativePrompt: form.negativePrompt,
             size: form.resolution,
-            count: 4,
+            count: candidateCount,
             referenceImage: referenceFile ?? undefined
           },
           async (result, index, total) => {
@@ -1578,7 +1575,7 @@ function AIStudio() {
         );
       } else {
         const generated = await Promise.all(
-          Array.from({length: 4}, async (_, variant) => ({
+          Array.from({length: candidateCount}, async (_, variant) => ({
             blob: await createMockCharacterBlob(
               form.characterName,
               form.style,
@@ -1788,6 +1785,20 @@ function AIStudio() {
                   <option value="1024">1024 × 1024</option>
                 </select>
               </Field>
+              {form.providerId === "spriteforge-server" && (
+                <Field label="候选数量">
+                  <select
+                    value={form.candidateCount}
+                    onChange={(event) =>
+                      setForm({...form, candidateCount: Number(event.target.value)})
+                    }
+                  >
+                    <option value="1">1 张（最快）</option>
+                    <option value="2">2 张（推荐）</option>
+                    <option value="4">4 张（较慢）</option>
+                  </select>
+                </Field>
+              )}
               <Field label="Seed">
                 <input
                   type="number"
@@ -1847,7 +1858,7 @@ function AIStudio() {
                 ? "正在创建生成任务…"
                 : form.providerId === "mock"
                   ? "✦ 生成 4 个测试候选"
-                  : "✦ 使用真实 AI 生成 4 个候选"}
+                  : `✦ 使用真实 AI 生成 ${form.candidateCount} 个候选`}
             </button>
           </section>
 
